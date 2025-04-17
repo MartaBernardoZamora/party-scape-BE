@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//import java.util.List;
+import java.util.List;
+
+import dev.marta_bernardo.party_escape.player.Player;
 
 @Getter
 @Setter
@@ -31,7 +33,7 @@ public class Match {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-    //@OneToMany(mappedBy = "match", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<Player> players;
+    @OneToMany(mappedBy = "match", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Player> players;
 
 }
