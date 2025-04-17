@@ -28,8 +28,8 @@ public class Match {
     @JoinColumn(name = "lobby_id")
     private Lobby lobby;
 
-    //@Enumerated(EnumType.STRING)
-    //private MatchStatus status;
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status;
 
     //@OneToMany(mappedBy = "match", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     //private List<Player> players;
