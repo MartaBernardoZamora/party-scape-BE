@@ -8,6 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +27,6 @@ public class Game {
 
     private String description;
 
-    //@OneToMany(mappedBy = "game")
-    //private Set<LobbyGame> lobbyGames = new HashSet<>();
-
+    @OneToMany(mappedBy = "game")
+    private Set<LobbyGame> lobbyGames = new HashSet<>();
 }
