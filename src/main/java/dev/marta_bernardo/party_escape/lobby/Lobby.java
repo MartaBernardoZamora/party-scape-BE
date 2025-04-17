@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//import java.util.List;
+import java.util.List;
+
+import dev.marta_bernardo.party_escape.match.Match;
 
 @Getter
 @Setter
@@ -22,8 +24,8 @@ public class Lobby {
 
     private String joinCode;
     
-    /*@OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> matches;*/
+    @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Match> matches;
     
     /*@ManyToOne
     @JoinColumn(name = "admin_id")
