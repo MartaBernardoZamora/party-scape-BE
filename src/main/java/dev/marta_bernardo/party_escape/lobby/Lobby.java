@@ -6,8 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
 import dev.marta_bernardo.party_escape.match.Match;
 
 @Getter
@@ -26,6 +29,9 @@ public class Lobby {
     
     @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches;
+
+    @OneToMany(mappedBy = "lobby")
+    private Set<LobbyGame> lobbyGames = new HashSet<>();
     
     /*@ManyToOne
     @JoinColumn(name = "admin_id")
