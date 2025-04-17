@@ -27,4 +27,6 @@ public class LobbyGame {
     @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
+
+    private Integer position;
 }
