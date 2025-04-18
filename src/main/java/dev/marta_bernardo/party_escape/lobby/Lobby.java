@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
 import dev.marta_bernardo.party_escape.match.Match;
@@ -27,7 +28,7 @@ public class Lobby {
     private String name;
     
     @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> matches;
+    private List<Match> matches = new ArrayList<>();
 
     @OneToMany(mappedBy = "lobby")
     private Set<LobbyGame> lobbyGames = new HashSet<>();
