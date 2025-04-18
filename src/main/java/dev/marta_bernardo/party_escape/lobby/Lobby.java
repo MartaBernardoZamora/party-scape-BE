@@ -1,7 +1,7 @@
 package dev.marta_bernardo.party_escape.lobby;
 
 import jakarta.persistence.*;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +18,7 @@ import dev.marta_bernardo.party_escape.admin.Admin;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "lobbies")
 public class Lobby {
