@@ -25,8 +25,6 @@ public class Lobby {
     private Long id;
 
     private String name;
-
-    private String joinCode;
     
     @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches;
