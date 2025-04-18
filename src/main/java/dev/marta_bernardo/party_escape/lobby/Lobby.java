@@ -12,6 +12,7 @@ import java.util.Set;
 
 import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
 import dev.marta_bernardo.party_escape.match.Match;
+import dev.marta_bernardo.party_escape.admin.Admin;
 
 @Getter
 @Setter
@@ -33,7 +34,7 @@ public class Lobby {
     @OneToMany(mappedBy = "lobby")
     private Set<LobbyGame> lobbyGames = new HashSet<>();
     
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "admin_id")
-    private Admin admin;*/
+    private Admin admin;
 }
