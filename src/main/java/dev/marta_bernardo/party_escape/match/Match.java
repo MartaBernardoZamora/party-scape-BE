@@ -23,6 +23,9 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "join_code")
+    private String joinCode;
+
     @Column(name = "start_datetime")
     private LocalDateTime startDatetime;
 
