@@ -13,7 +13,7 @@ import dev.marta_bernardo.party_escape.lobby.Lobby;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "lobby_game")
+@Table(name = "lobbies_games")
 public class LobbyGame {
 
     @Id
