@@ -1,3 +1,9 @@
 package dev.marta_bernardo.party_escape.lobby;
 
-public record LobbyRequestDTO(String name, Long adminId) {}
+import java.util.Set;
+
+public record LobbyRequestDTO(
+    String name, 
+    Long adminId,
+    Set<Long> lobbyGameIds
+) {}
