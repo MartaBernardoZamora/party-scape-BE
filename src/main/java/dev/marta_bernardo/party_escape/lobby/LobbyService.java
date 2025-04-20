@@ -36,9 +36,9 @@ public class LobbyService {
                               .orElseThrow(() -> new RuntimeException("Lobby not found"));
     }
 
-    public LobbyResponseDTO create(LobbyRequestDTO request) {
-        Admin admin = adminRepository.findById(request.adminId())
-            .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + request.adminId()));
+    public LobbyResponseDTO create(LobbyRequestDTO request, Long adminId) {
+        Admin admin = adminRepository.findById(adminId)
+            .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
         Set<LobbyGame> lobbyGames = request.lobbyGameIds()
                                             .stream()
