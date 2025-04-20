@@ -17,12 +17,14 @@ public class LobbyService {
     AdminRepository adminRepository;
     LobbyGameRepository lobbyGameRepository;
 
-    public LobbyService(LobbyRepository lobbyRepository) {
+    public LobbyService(LobbyRepository lobbyRepository, AdminRepository adminRepository, LobbyGameRepository lobbyGameRepository) {
         this.lobbyRepository = lobbyRepository;
+        this.adminRepository = adminRepository;
+        this.lobbyGameRepository = lobbyGameRepository;
     }
 
-    public List<LobbyResponseDTO> getAll() {
-        return lobbyRepository.findAll()
+    public List<LobbyResponseDTO> getAll(Long adminId) {
+        return lobbyRepository.findByAdminId(adminId)
                               .stream()
                               .map(LobbyResponseDTO::new)
                               .toList();
@@ -48,9 +50,8 @@ public class LobbyService {
         lobby.setName(request.name());
         lobby.setAdmin(admin);
         lobby.setLobbyGames(lobbyGames);
-        lobbyRepository.save(lobby);
 
-        return new LobbyResponseDTO(lobby);
+        return new LobbyResponseDTO(lobbyRepository.save(lobby));
     }
     public LobbyResponseDTO update(Long id, LobbyRequestDTO request){
         return lobbyRepository.findById(id)
@@ -59,14 +60,15 @@ public class LobbyService {
                                 lobby.setLobbyGames(request.lobbyGameIds().stream()
                                     .map(gameId -> lobbyGameRepository.findById(gameId)
                                     .orElseThrow(() -> new RuntimeException("LobbyGame not found with ID: " + gameId)))
-                                    .collect(Collectors.toSet()));
-                                lobbyRepository.save(lobby);
-                                return new LobbyResponseDTO(lobby);
+                                    .collect(Collectors.toSet()));                                
+                                return new LobbyResponseDTO(lobbyRepository.save(lobby));
                             })
                             .orElseThrow(() -> new RuntimeException("Lobby not found"));
     }
     public void delete(Long id) {
-        lobbyRepository.deleteById(id);
+        Lobby lobby = lobbyRepository.findById(id)
+                                    .orElseThrow(() -> new RuntimeException("Lobby not found with ID: " + id));
+        lobbyRepository.delete(lobby);
     }
 
 }
