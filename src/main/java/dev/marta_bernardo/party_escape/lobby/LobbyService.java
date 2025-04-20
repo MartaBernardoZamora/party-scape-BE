@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
 import dev.marta_bernardo.party_escape.lobbygame.LobbyGameRepository;
-import dev.marta_bernardo.party_escape.admin.Admin;
 import dev.marta_bernardo.party_escape.admin.AdminRepository;
 
 import java.util.List;
@@ -24,6 +23,8 @@ public class LobbyService {
     }
 
     public List<LobbyResponseDTO> getAll(Long adminId) {
+        adminRepository.findById(adminId)
+            .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
         return lobbyRepository.findByAdminId(adminId)
                               .stream()
                               .map(LobbyResponseDTO::new)
@@ -37,7 +38,7 @@ public class LobbyService {
     }
 
     public LobbyResponseDTO create(LobbyRequestDTO request, Long adminId) {
-        Admin admin = adminRepository.findById(adminId)
+        adminRepository.findById(adminId)
             .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
         Set<LobbyGame> lobbyGames = request.lobbyGameIds()
@@ -48,7 +49,6 @@ public class LobbyService {
 
         Lobby lobby = new Lobby();
         lobby.setName(request.name());
-        lobby.setAdmin(admin);
         lobby.setLobbyGames(lobbyGames);
 
         return new LobbyResponseDTO(lobbyRepository.save(lobby));
