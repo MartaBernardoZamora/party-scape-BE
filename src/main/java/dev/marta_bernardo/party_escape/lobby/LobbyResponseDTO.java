@@ -10,7 +10,7 @@ public record LobbyResponseDTO(
     Long id,
     String name,
     List<Long> matchIds,
-    Set<Long> lobbyGameIds,
+    Set<Long> gameIds,
     Long adminId
 ) {
     public LobbyResponseDTO(Lobby lobby) {
