@@ -46,6 +46,7 @@ public class LobbyController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> destroy(@PathVariable Long id) {
+        lobbyService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

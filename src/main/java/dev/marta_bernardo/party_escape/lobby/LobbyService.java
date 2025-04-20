@@ -11,6 +11,7 @@ import dev.marta_bernardo.party_escape.admin.AdminRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class LobbyService {
@@ -49,20 +50,7 @@ public class LobbyService {
         lobby.setName(request.name());
         lobby.setAdmin(adminRepository.findById(adminId).get());
 
-        Set<LobbyGame> lobbyGames = request.lobbyGameIds()
-                                            .stream()
-                                            .map(gameId -> {
-                                                Game game = gameRepository.findById(gameId)
-                                                    .orElseThrow(() -> new RuntimeException("Game not found with ID: " + gameId));
-                                                
-                                                LobbyGame lobbyGame = new LobbyGame();
-                                                lobbyGame.setLobby(lobby);
-                                                lobbyGame.setGame(game);;
-                                                return lobbyGame;
-                                            })
-                                            .collect(Collectors.toSet());
-        
-        lobby.setLobbyGames(lobbyGames);
+        lobby.setLobbyGames(buildLobbyGames(request.gameIds(), lobby));
 
         return new LobbyResponseDTO(lobbyRepository.save(lobby));
     }
@@ -70,10 +58,8 @@ public class LobbyService {
         return lobbyRepository.findById(id)
                             .map(lobby -> {
                                 lobby.setName(request.name());
-                                lobby.setLobbyGames(request.lobbyGameIds().stream()
-                                    .map(gameId -> lobbyGameRepository.findById(gameId)
-                                    .orElseThrow(() -> new RuntimeException("LobbyGame not found with ID: " + gameId)))
-                                    .collect(Collectors.toSet()));                                
+                                lobby.getLobbyGames().clear();
+                                lobby.getLobbyGames().addAll(buildLobbyGames(request.gameIds(), lobby));
                                 return new LobbyResponseDTO(lobbyRepository.save(lobby));
                             })
                             .orElseThrow(() -> new RuntimeException("Lobby not found"));
@@ -82,6 +68,21 @@ public class LobbyService {
         Lobby lobby = lobbyRepository.findById(id)
                                     .orElseThrow(() -> new RuntimeException("Lobby not found with ID: " + id));
         lobbyRepository.delete(lobby);
+    }
+    private Set<LobbyGame> buildLobbyGames(List<Long> gameIds, Lobby lobby) {
+        AtomicInteger positionCounter = new AtomicInteger(1);
+    
+        return gameIds.stream()
+            .map(gameId -> {
+                Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new RuntimeException("Game not found with ID: " + gameId));
+                LobbyGame lobbyGame = new LobbyGame();
+                lobbyGame.setLobby(lobby);
+                lobbyGame.setGame(game);
+                lobbyGame.setPosition(positionCounter.getAndIncrement());
+                return lobbyGame;
+            })
+            .collect(Collectors.toSet());
     }
 
 }
