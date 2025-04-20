@@ -3,6 +3,8 @@ package dev.marta_bernardo.party_escape.lobby;
 import org.springframework.stereotype.Service;
 
 import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
+import dev.marta_bernardo.party_escape.game.Game;
+import dev.marta_bernardo.party_escape.game.GameRepository;
 import dev.marta_bernardo.party_escape.lobbygame.LobbyGameRepository;
 import dev.marta_bernardo.party_escape.admin.AdminRepository;
 
@@ -15,11 +17,13 @@ public class LobbyService {
     LobbyRepository lobbyRepository;
     AdminRepository adminRepository;
     LobbyGameRepository lobbyGameRepository;
+    GameRepository gameRepository;
 
-    public LobbyService(LobbyRepository lobbyRepository, AdminRepository adminRepository, LobbyGameRepository lobbyGameRepository) {
+    public LobbyService(LobbyRepository lobbyRepository, AdminRepository adminRepository, LobbyGameRepository lobbyGameRepository, GameRepository gameRepository) {
         this.lobbyRepository = lobbyRepository;
         this.adminRepository = adminRepository;
         this.lobbyGameRepository = lobbyGameRepository;
+        this.gameRepository = gameRepository;
     }
 
     public List<LobbyResponseDTO> getAll(Long adminId) {
@@ -40,15 +44,24 @@ public class LobbyService {
     public LobbyResponseDTO create(LobbyRequestDTO request, Long adminId) {
         adminRepository.findById(adminId)
             .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
+        
+        Lobby lobby = new Lobby();
+        lobby.setName(request.name());
+        lobby.setAdmin(adminRepository.findById(adminId).get());
 
         Set<LobbyGame> lobbyGames = request.lobbyGameIds()
                                             .stream()
-                                            .map(id -> lobbyGameRepository.findById(id)
-                                            .orElseThrow(() -> new RuntimeException("LobbyGame not found with ID: " + id)))
+                                            .map(gameId -> {
+                                                Game game = gameRepository.findById(gameId)
+                                                    .orElseThrow(() -> new RuntimeException("Game not found with ID: " + gameId));
+                                                
+                                                LobbyGame lobbyGame = new LobbyGame();
+                                                lobbyGame.setLobby(lobby);
+                                                lobbyGame.setGame(game);;
+                                                return lobbyGame;
+                                            })
                                             .collect(Collectors.toSet());
-
-        Lobby lobby = new Lobby();
-        lobby.setName(request.name());
+        
         lobby.setLobbyGames(lobbyGames);
 
         return new LobbyResponseDTO(lobbyRepository.save(lobby));

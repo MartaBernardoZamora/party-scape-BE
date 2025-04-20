@@ -29,7 +29,7 @@ public class Lobby {
     @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "lobby")
+    @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LobbyGame> lobbyGames = new HashSet<>();
     
     @ManyToOne

@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import dev.marta_bernardo.party_escape.match.Match;
-import dev.marta_bernardo.party_escape.lobbygame.LobbyGame;
 
 public record LobbyResponseDTO(
     Long id,
@@ -19,7 +18,9 @@ public record LobbyResponseDTO(
             lobby.getId(), 
             lobby.getName(), 
             lobby.getMatches().stream().map(Match::getId).toList(), 
-            lobby.getLobbyGames().stream().map(LobbyGame::getId).collect(Collectors.toSet()),            
+            lobby.getLobbyGames().stream()
+                .map(lg -> lg.getGame().getId())
+                .collect(Collectors.toSet()),           
             lobby.getAdmin().getId()
         );
     }
