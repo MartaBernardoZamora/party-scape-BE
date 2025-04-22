@@ -26,6 +26,11 @@ public class Game {
     private String name;
 
     private String description;
+    
+    @Column(name = "component_key")
+    private String componentKey;
+
+    private String answer;
 
     @OneToMany(mappedBy = "game")
     private Set<LobbyGame> lobbyGames = new HashSet<>();
