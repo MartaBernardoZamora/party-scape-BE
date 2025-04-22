@@ -1,7 +1,5 @@
 package dev.marta_bernardo.party_escape.game;
 
-//import java.util.HashSet;
-
 import jakarta.persistence.*;
 
 import lombok.Getter;
