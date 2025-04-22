@@ -1,17 +1,12 @@
 package dev.marta_bernardo.party_escape.match;
 
-import java.time.LocalDateTime;
-
 import dev.marta_bernardo.party_escape.lobby.Lobby;
+import dev.marta_bernardo.party_escape.matchdata.MatchProfile;
 import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-
-import dev.marta_bernardo.party_escape.player.Player;
 
 @Getter
 @Setter
@@ -26,9 +21,6 @@ public class Match {
     @Column(name = "join_code")
     private String joinCode;
 
-    @Column(name = "start_datetime")
-    private LocalDateTime startDatetime;
-
     @ManyToOne
     @JoinColumn(name = "lobby_id")
     private Lobby lobby;
@@ -36,7 +28,6 @@ public class Match {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-    @OneToMany(mappedBy = "match", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Player> players;
-
+    @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
+    private MatchProfile matchProfile;
 }
