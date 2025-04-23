@@ -25,10 +25,20 @@ public class MatchController {
         this.matchService = matchService;
     }
     
-    @GetMapping()
+    @GetMapping(params = "lobbyId")
     public ResponseEntity<List<MatchResponseDTO>> index(@RequestParam(required = true) Long lobbyId) {
         return ResponseEntity.ok(matchService.getByLobbyId(lobbyId));
     }
+    @GetMapping(params = "code")
+    public ResponseEntity<MatchResponseDTO> getByJoinCode(@RequestParam String code) {
+        System.out.println("🔍 Buscando partida con código: " + code);
+        MatchResponseDTO match = matchService.getByJoinCode(code);
+        if (match == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(match);
+    }
+
     @GetMapping("/{matchId}")
     public ResponseEntity<MatchResponseDTO> show(@PathVariable("matchId") Long matchId) {
         return ResponseEntity.ok(matchService.getById(matchId));
