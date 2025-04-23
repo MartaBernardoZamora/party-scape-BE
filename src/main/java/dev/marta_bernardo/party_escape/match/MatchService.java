@@ -1,5 +1,6 @@
 package dev.marta_bernardo.party_escape.match;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -19,8 +20,7 @@ public class MatchService {
         this.lobbyRepository = lobbyRepository;
     }
     public MatchResponseDTO create(MatchRequestDTO request){
-        Lobby lobby = lobbyRepository.findById(request.lobbyId())
-            .orElseThrow(() -> new EntityNotFoundException("Lobby no encontrado"));
+        Lobby lobby = getLobbyOrThrow(request.lobbyId());
         String status= "CREATED";
         Match match = new Match(generateUniqueJoinCode(), lobby, status);
         matchRepository.save(match);
@@ -32,6 +32,21 @@ public class MatchService {
             code = UUID.randomUUID().toString().substring(0, 8).toUpperCase(); 
         } while (matchRepository.existsByJoinCode(code));
         return code;
+    }
+    public List<MatchResponseDTO> getByLobbyId(Long lobbyId) {
+        getLobbyOrThrow(lobbyId);
+        List<Match> matches = matchRepository.findByLobbyId(lobbyId);
+        if(matches.isEmpty()){
+            throw new EntityNotFoundException("No hay partidas en esta sala");
+        }
+        return matchRepository.findByLobbyId(lobbyId)
+                            .stream()
+                            .map(MatchResponseDTO::new)
+                            .toList();
+    }
+    private Lobby getLobbyOrThrow(Long lobbyId) {
+        return lobbyRepository.findById(lobbyId)
+            .orElseThrow(() -> new EntityNotFoundException("Lobby no encontrado"));
     }
 
 }

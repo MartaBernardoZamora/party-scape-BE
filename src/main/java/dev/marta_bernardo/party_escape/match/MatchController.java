@@ -1,10 +1,14 @@
 package dev.marta_bernardo.party_escape.match;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -17,7 +21,11 @@ public class MatchController {
     public MatchController(MatchService matchService) {
         this.matchService = matchService;
     }
-
+    
+    @GetMapping()
+    public ResponseEntity<List<MatchResponseDTO>> index(@RequestParam(required = true) Long lobbyId) {
+        return ResponseEntity.ok(matchService.getByLobbyId(lobbyId));
+    }
     @PostMapping()
     public ResponseEntity<MatchResponseDTO>create(@RequestBody MatchRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matchService.create(request));
