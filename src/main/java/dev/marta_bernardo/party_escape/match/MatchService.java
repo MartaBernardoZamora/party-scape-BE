@@ -35,10 +35,6 @@ public class MatchService {
     }
     public List<MatchResponseDTO> getByLobbyId(Long lobbyId) {
         getLobbyOrThrow(lobbyId);
-        List<Match> matches = matchRepository.findByLobbyId(lobbyId);
-        if(matches.isEmpty()){
-            throw new EntityNotFoundException("No hay partidas en esta sala");
-        }
         return matchRepository.findByLobbyId(lobbyId)
                             .stream()
                             .map(MatchResponseDTO::new)
