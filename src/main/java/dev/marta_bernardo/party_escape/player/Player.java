@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
-import dev.marta_bernardo.party_escape.match.Match;
+import dev.marta_bernardo.party_escape.matchdata.MatchProfile;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +26,6 @@ public class Player {
     private LocalDateTime finishDateTime;
 
     @ManyToOne
-    @JoinColumn(name = "match_id")
-    private Match match;
+    @JoinColumn(name = "match_profile_id")
+    private MatchProfile matchProfile;
 }
