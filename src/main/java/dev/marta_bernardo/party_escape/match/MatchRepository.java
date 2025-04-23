@@ -9,4 +9,5 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     Optional<Match> findById(Long id);
     Boolean existsByJoinCode(String joinCode);
     List<Match> findByLobbyId(Long lobbyId);
+    Optional<Match> findByJoinCode(String code);
 }
