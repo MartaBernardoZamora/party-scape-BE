@@ -2,6 +2,7 @@ package dev.marta_bernardo.party_escape.match;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,6 +26,10 @@ public class MatchController {
     @GetMapping()
     public ResponseEntity<List<MatchResponseDTO>> index(@RequestParam(required = true) Long lobbyId) {
         return ResponseEntity.ok(matchService.getByLobbyId(lobbyId));
+    }
+    @GetMapping("/{matchId}")
+    public ResponseEntity<MatchResponseDTO> show(@PathVariable("matchId") Long matchId) {
+        return ResponseEntity.ok(matchService.getById(matchId));
     }
     @PostMapping()
     public ResponseEntity<MatchResponseDTO>create(@RequestBody MatchRequestDTO request) {

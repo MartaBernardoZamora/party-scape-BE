@@ -48,5 +48,10 @@ public class MatchService {
         return lobbyRepository.findById(lobbyId)
             .orElseThrow(() -> new EntityNotFoundException("Lobby no encontrado"));
     }
+    public MatchResponseDTO getById(Long matchId) {
+        Match match = matchRepository.findById(matchId)
+            .orElseThrow(() -> new EntityNotFoundException("Partida no encontrada"));
+        return new MatchResponseDTO(match);
+    }
 
 }
