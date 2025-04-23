@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +35,11 @@ public class MatchController {
     @PostMapping()
     public ResponseEntity<MatchResponseDTO>create(@RequestBody MatchRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matchService.create(request));
+    }
+    @DeleteMapping("/{matchId}")
+    public ResponseEntity<Void> destroy(@PathVariable Long matchId) {
+        matchService.delete(matchId);
+        return ResponseEntity.noContent().build();
     }
     
 }

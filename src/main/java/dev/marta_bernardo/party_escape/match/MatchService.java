@@ -53,5 +53,10 @@ public class MatchService {
             .orElseThrow(() -> new EntityNotFoundException("Partida no encontrada"));
         return new MatchResponseDTO(match);
     }
+    public void delete(Long matchId) {
+        Match match = matchRepository.findById(matchId)
+            .orElseThrow(() -> new EntityNotFoundException("Partida no encontrada"));
+        matchRepository.delete(match);
+    }
 
 }
