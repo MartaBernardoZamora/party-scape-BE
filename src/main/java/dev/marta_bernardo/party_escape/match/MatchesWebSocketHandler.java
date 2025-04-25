@@ -14,37 +14,57 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 @Component
 public class MatchesWebSocketHandler extends TextWebSocketHandler {
     private final Map<String, List<WebSocketSession>> matches = new ConcurrentHashMap<>();
+    private final Map<String, List<String>> matchPlayers = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         String matchId = getQueryParam(session, "match");
-    System.out.println("🔌 Nueva conexión. matchId = " + matchId);
-    if (matchId == null) {
-        System.out.println("❌ matchId es null. Cerrando conexión.");
-        return;
-    }
-    matches.computeIfAbsent(matchId, k -> new CopyOnWriteArrayList<>()).add(session);
-    System.out.println("✅ Sesión añadida a la partida " + matchId);
+
+        if (matchId == null) return;
+        
+        matches.computeIfAbsent(matchId, k -> new CopyOnWriteArrayList<>()).add(session);
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         String matchId = getQueryParam(session, "match");
-        System.out.println("📩 Mensaje recibido. matchId = " + matchId + ", payload = " + message.getPayload());
 
-        if (matchId == null) {
-            System.out.println("❌ matchId null en mensaje. Ignorando.");
+        if (matchId == null) return;
+
+        JsonNode json = objectMapper.readTree(message.getPayload());
+        String type = json.get("type").asText();
+
+        if ("GET_PLAYERS".equals(type)) {
+            List<Map<String, String>> players = matchPlayers.getOrDefault(matchId, List.of())
+                    .stream()
+                    .map(name -> Map.of("playerName", name))
+                    .toList();
+
+            ObjectNode response = objectMapper.createObjectNode();
+            response.put("type", "PLAYER_LIST");
+            response.set("payload", objectMapper.valueToTree(players));
+
+            session.sendMessage(new TextMessage(response.toString()));
             return;
         }
-        String payload = message.getPayload();
 
+        if ("NEW_PLAYER_JOINED".equals(type)) {
+            String playerName = json.get("payload").get("playerName").asText();
+            matchPlayers.computeIfAbsent(matchId, k -> new CopyOnWriteArrayList<>()).add(playerName);
+        }
 
         for (WebSocketSession s : matches.get(matchId)) {
             if (s.isOpen()) {
-                s.sendMessage(new TextMessage(payload)); // lo reenvía tal cual
+                s.sendMessage(new TextMessage(message.getPayload()));
             }
         }
     }
@@ -52,7 +72,8 @@ public class MatchesWebSocketHandler extends TextWebSocketHandler {
     private String getQueryParam(WebSocketSession session, String key) {
         try {
             URI uri = session.getUri();
-            if (uri == null) return null;
+            if (uri == null)
+                return null;
             String[] params = uri.getQuery().split("&");
             for (String param : params) {
                 String[] kv = param.split("=");
