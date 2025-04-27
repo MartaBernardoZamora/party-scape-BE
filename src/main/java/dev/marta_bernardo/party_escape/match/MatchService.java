@@ -12,17 +12,21 @@ import jakarta.persistence.EntityNotFoundException;
 import dev.marta_bernardo.party_escape.lobby.LobbyRepository;
 import dev.marta_bernardo.party_escape.matchdata.MatchProfile;
 import dev.marta_bernardo.party_escape.matchdata.MatchProfileRepository;
+import dev.marta_bernardo.party_escape.player.Player;
+import dev.marta_bernardo.party_escape.player.PlayerRepository;
 
 @Service
 public class MatchService {
     private final MatchRepository matchRepository;
     private final LobbyRepository lobbyRepository;
     private final MatchProfileRepository matchProfileRepository;
+    private final PlayerRepository playerRepository;
 
-    public MatchService(MatchRepository matchRepository, LobbyRepository lobbyRepository, MatchProfileRepository matchProfileRepository) {
+    public MatchService(MatchRepository matchRepository, LobbyRepository lobbyRepository, MatchProfileRepository matchProfileRepository, PlayerRepository playerRepository) {
         this.matchRepository = matchRepository;
         this.lobbyRepository = lobbyRepository;
         this.matchProfileRepository = matchProfileRepository;
+        this.playerRepository = playerRepository;
     }
     public MatchResponseDTO create(MatchRequestDTO request){
         Lobby lobby = getLobbyOrThrow(request.lobbyId());
@@ -64,6 +68,21 @@ public class MatchService {
             matchProfile.setMatch(match);
             matchProfile.setStartDatetime(LocalDateTime.now());
             matchProfileRepository.save(matchProfile);
+        }
+        if("FINISHED".equals(request.status().name())) {
+            MatchProfile matchProfile = matchProfileRepository.findByMatchId(matchId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Partida no encontrada"));
+            request.results().forEach(player -> {
+                Player playerEntity = new Player();
+                playerEntity.setMatchProfile(matchProfile);
+                playerEntity.setName(player.playerName());
+                playerEntity.setFinish(player.finished());
+                playerEntity.setFinishDateTime(player.finalTime());
+                playerRepository.save(playerEntity);
+            });
+            
         }
         matchRepository.save(match);
         return new MatchResponseDTO(match);
