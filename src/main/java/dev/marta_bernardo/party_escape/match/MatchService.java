@@ -1,5 +1,6 @@
 package dev.marta_bernardo.party_escape.match;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,15 +10,19 @@ import dev.marta_bernardo.party_escape.lobby.Lobby;
 import jakarta.persistence.EntityNotFoundException;
 
 import dev.marta_bernardo.party_escape.lobby.LobbyRepository;
+import dev.marta_bernardo.party_escape.matchdata.MatchProfile;
+import dev.marta_bernardo.party_escape.matchdata.MatchProfileRepository;
 
 @Service
 public class MatchService {
     private final MatchRepository matchRepository;
     private final LobbyRepository lobbyRepository;
+    private final MatchProfileRepository matchProfileRepository;
 
-    public MatchService(MatchRepository matchRepository, LobbyRepository lobbyRepository) {
+    public MatchService(MatchRepository matchRepository, LobbyRepository lobbyRepository, MatchProfileRepository matchProfileRepository) {
         this.matchRepository = matchRepository;
         this.lobbyRepository = lobbyRepository;
+        this.matchProfileRepository = matchProfileRepository;
     }
     public MatchResponseDTO create(MatchRequestDTO request){
         Lobby lobby = getLobbyOrThrow(request.lobbyId());
@@ -53,6 +58,13 @@ public class MatchService {
         Match match = matchRepository.findById(matchId)
             .orElseThrow(() -> new EntityNotFoundException("Partida no encontrada"));
         match.setStatus(request.status());
+
+        if ("IN_PROGRESS".equals(request.status().name())) {
+            MatchProfile matchProfile = new MatchProfile();
+            matchProfile.setMatch(match);
+            matchProfile.setStartDatetime(LocalDateTime.now());
+            matchProfileRepository.save(matchProfile);
+        }
         matchRepository.save(match);
         return new MatchResponseDTO(match);
     }
