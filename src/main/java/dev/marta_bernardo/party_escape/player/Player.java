@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import dev.marta_bernardo.party_escape.matchdata.MatchProfile;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "players")
 public class Player {
@@ -24,6 +25,8 @@ public class Player {
 
     @Column(name = "finish_datetime")
     private LocalDateTime finishDateTime;
+
+    private Boolean finish;
 
     @ManyToOne
     @JoinColumn(name = "match_profile_id")
