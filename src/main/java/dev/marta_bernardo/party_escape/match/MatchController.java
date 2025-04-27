@@ -31,7 +31,6 @@ public class MatchController {
     }
     @GetMapping(params = "code")
     public ResponseEntity<MatchResponseDTO> getByJoinCode(@RequestParam String code) {
-        System.out.println("🔍 Buscando partida con código: " + code);
         MatchResponseDTO match = matchService.getByJoinCode(code);
         if (match == null) {
             return ResponseEntity.notFound().build();
