@@ -1,0 +1,21 @@
+# Ignorar sistema de control de versiones
+.git
+.gitignore
+
+# Archivos de entorno
+.env
+*.env
+
+# Archivos de configuración de IDE
+*.iml
+.idea
+.vscode
+
+# Archivos de compilación
+target/
+build/
+out/
+
+# Otros
+Dockerfile~
+README.md~
