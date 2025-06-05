@@ -6,7 +6,7 @@ Backend de la aplicación PartyEscape desarrollado en Java 21 con Spring Boot 3.
 
 - Java 21
 - Spring Boot 3.4.4
-- MySQL
+- PostgreSQL
 - JPA / Hibernate
 - Maven
 - Docker/Docker Compose
@@ -31,7 +31,7 @@ cd party-scape-BE
 
 `docker compose up --build`
 
-Esto construirá el contenedor y arrancará tanto la base de datos como el backend en red interna.El backend estará disponible en: http://localhost:8080
+Esto construirá el contenedor y arrancará tanto la base de datos como el backend en red interna.El backend estará disponible en: <http://localhost:8080>
 
 ## Variables de entorno utilizadas
 
@@ -45,16 +45,13 @@ cp .env.example .env
 
 Luego modifica los valores si es necesario antes de ejecutar el contenedor.
 
-| Variable                     | Uso                                           |
-| ---------------------------- | --------------------------------------------- |
-| `SPRING_PROFILES_ACTIVE`     | Activa el perfil de Spring (por defecto: dev) |
-| `MYSQL_ROOT_PASSWORD`        | Contraseña del usuario root de MySQL          |
-| `MYSQL_DATABASE`             | Nombre de la base de datos                    |
-| `MYSQL_USER`                 | Usuario que usará la app                      |
-| `MYSQL_PASSWORD`             | Contraseña de ese usuario                     |
-| `SPRING_DATASOURCE_URL`      | Cadena de conexión JDBC desde el backend      |
-| `SPRING_DATASOURCE_USERNAME` | Usuario usado por Spring Boot para conectarse |
-| `SPRING_DATASOURCE_PASSWORD` | Contraseña correspondiente                    |
+| Variable                     | Descripción                                  |
+| ---------------------------- | -------------------------------------------- |
+| `SPRING_DATASOURCE_URL`      | Cadena JDBC para conectarse a PostgreSQL     |
+| `SPRING_DATASOURCE_USERNAME` | Usuario de conexión a la base de datos       |
+| `SPRING_DATASOURCE_PASSWORD` | Contraseña del usuario anterior              |
+| `POSTGRES_DB`                | Nombre de la base de datos de PostgreSQL     |
+| `SPRING_PROFILES_ACTIVE`     | Perfil de Spring activo (por defecto: `dev`) |
 
 En producción (por ejemplo en Render), estas variables deben definirse desde el panel de configuración del entorno y no mediante un archivo .env.
 
@@ -72,17 +69,19 @@ spring.profiles.active=dev
 En `application-dev.properties` (perfil activo):
 
 ```properties
-spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/party_escape
-spring.datasource.username=${DATABASE_USERNAME}
-spring.datasource.password=${DATABASE_PASSWORD}
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.defer-datasource-initialization=true
 spring.jpa.show-sql=true
 spring.sql.init.mode=always
 spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 ```
+
 ---
 
 ## Autora
