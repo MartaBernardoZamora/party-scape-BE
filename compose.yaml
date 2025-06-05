@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   mysql:
-    image: 'mysql:latest'
+    image: mysql:8.4
     environment:
-      MYSQL_DATABASE: party_escape
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: verysecret
-      MYSQL_USER: myuser
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
     networks:
       - backend-net    
     healthcheck:
@@ -19,10 +19,9 @@ services:
   backend:
     build: .
     environment:
-      DATABASE_USERNAME: myuser
-      DATABASE_PASSWORD: secret
-      MYSQL_HOST: mysql
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
       - '8080:8080'
     depends_on:
