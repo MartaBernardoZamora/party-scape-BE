@@ -35,15 +35,28 @@ Esto construirá el contenedor y arrancará tanto la base de datos como el backe
 
 ## Variables de entorno utilizadas
 
-Estas se definen dentro del `docker-compose.yml`, por lo tanto **no es necesario crearlas manualmente**.
+Este proyecto utiliza variables de entorno definidas en un archivo .env que no está incluido en el repositorio por seguridad.
 
-| Variable              | Uso                                     |
-|-----------------------|------------------------------------------|
-| `SPRING_PROFILES_ACTIVE=dev` | Activa configuración de desarrollo |
-| `MYSQL_HOST=mysql`    | Nombre del contenedor MySQL              |
-| `DATABASE_USERNAME=myuser` | Usuario de la base de datos         |
-| `DATABASE_PASSWORD=secret` | Contraseña                          |
+Puedes crear uno fácilmente copiando el archivo .env.example incluido:
 
+```bash
+cp .env.example .env
+```
+
+Luego modifica los valores si es necesario antes de ejecutar el contenedor.
+
+| Variable                     | Uso                                           |
+| ---------------------------- | --------------------------------------------- |
+| `SPRING_PROFILES_ACTIVE`     | Activa el perfil de Spring (por defecto: dev) |
+| `MYSQL_ROOT_PASSWORD`        | Contraseña del usuario root de MySQL          |
+| `MYSQL_DATABASE`             | Nombre de la base de datos                    |
+| `MYSQL_USER`                 | Usuario que usará la app                      |
+| `MYSQL_PASSWORD`             | Contraseña de ese usuario                     |
+| `SPRING_DATASOURCE_URL`      | Cadena de conexión JDBC desde el backend      |
+| `SPRING_DATASOURCE_USERNAME` | Usuario usado por Spring Boot para conectarse |
+| `SPRING_DATASOURCE_PASSWORD` | Contraseña correspondiente                    |
+
+En producción (por ejemplo en Render), estas variables deben definirse desde el panel de configuración del entorno y no mediante un archivo .env.
 
 ---
 
