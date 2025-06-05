@@ -1,25 +1,25 @@
 -- Admins
-INSERT INTO admins (id, email, password, username) 
+INSERT INTO admins (email, password, username) 
 VALUES 
-    (1, 'martaexample.com', 'password', 'Marta'),
-    (2, 'carlosexample.com', 'password', 'Carlos');
+    ('marta@example.com', 'password', 'Marta'),
+    ('carlos@example.com', 'password', 'Carlos');
 
 -- Lobby Games
-INSERT INTO games (id, name, description) 
+INSERT INTO games (name, description) 
 VALUES 
-    (1, 'Adivina la palabra', 'Juego de palabras por turnos'),
-    (2, 'Escape visual', 'Encuentra objetos ocultos'),
-    (3, 'Trivia musical', 'Preguntas sobre canciones');
+    ('Adivina la palabra', 'Juego de palabras por turnos'),
+    ('Escape visual', 'Encuentra objetos ocultos'),
+    ('Trivia musical', 'Preguntas sobre canciones');
 
 -- Lobbies
-INSERT INTO lobbies (id, name, admin_id) 
+INSERT INTO lobbies (name, admin_id) 
 VALUES 
-    (1, 'Sala de Marta', 1),
-    (2, 'Fiesta de Carlos', 2);
+    ('Sala de Marta', 1),
+    ('Fiesta de Carlos', 2);
 
 -- Relación Lobby - LobbyGames (asumiendo tabla intermedia lobbies_lobby_games o similar)
-INSERT INTO lobbies_games (lobby_id, game_id) 
+INSERT INTO lobbies_games (position, game_id, lobby_id) 
 VALUES 
-    (1, 1),
-    (1, 2),
-    (2, 3);
+    (1, 1, 1),
+    (2, 2, 1),
+    (1, 3, 2);
